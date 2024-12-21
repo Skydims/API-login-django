@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <script>
+      async function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("/api/auth/login/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+        if (response.status === 200) {
+          alert("Login berhasil!");
+          localStorage.setItem("token", data.token); // Simpan token di browser
+          document.getElementById("status").innerText = "Login berhasil!";
+        } else {
+          alert(data.message);
+          document.getElementById("status").innerText = "Login gagal!";
+        }
+      }
+
+      async function logout() {
+        const token = localStorage.getItem("token");
+        const response = await fetch("/api/auth/logout/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token }),
+        });
+
+        const data = await response.json();
+        if (response.status === 200) {
+          alert("Logout berhasil!");
+          localStorage.removeItem("token"); // Hapus token dari browser
+          document.getElementById("status").innerText = "Logout berhasil!";
+        } else {
+          alert(data.message);
+          document.getElementById("status").innerText = "Logout gagal!";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Login Page</h1>
+    <div>
+      <label>Username:</label>
+      <input type="text" id="username" />
+    </div>
+    <div>
+      <label>Password:</label>
+      <input type="password" id="password" />
+    </div>
+    <button onclick="login()">Login</button>
+    <button onclick="logout()">Logout</button>
+
+    <p id="status"></p>
+    <script>
+      async function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        console.log("Attempting login with", { username, password });
+
+        const response = await fetch("/api/auth/login/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+        console.log("Login response:", data);
+
+        if (response.status === 200) {
+          alert("Login berhasil!");
+          localStorage.setItem("token", data.token);
+          document.getElementById("status").innerText = "Login berhasil!";
+        } else {
+          alert(data.message);
+          document.getElementById("status").innerText = "Login gagal!";
+        }
+      }
+
+      async function logout() {
+        const token = localStorage.getItem("token");
+
+        console.log("Attempting logout with token:", token);
+
+        const response = await fetch("/api/auth/logout/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token }),
+        });
+
+        const data = await response.json();
+        console.log("Logout response:", data);
+
+        if (response.status === 200) {
+          alert("Logout berhasil!");
+          localStorage.removeItem("token");
+          document.getElementById("status").innerText = "Logout berhasil!";
+        } else {
+          alert(data.message);
+          document.getElementById("status").innerText = "Logout gagal!";
+        }
+      }
+    </script>
+  </body>
+</html>
